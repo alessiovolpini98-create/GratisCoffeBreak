@@ -4,20 +4,27 @@
   <meta charset="utf-8">
   <title>Mostra Immagine + QR Code</title>
 
-  <!-- CDN affidabile per qrcodejs -->
+  <!-- Libreria qrcodejs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; background:#f4f4f4; }
-    /* contenitore centrale per mantenere l'immagine centrata */
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      font-family: Arial, sans-serif; 
+      background:#f4f4f4; 
+    }
+
+    /* contenitore centrale */
     .container {
       min-height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 140px; /* spazio per il footer fisso */
+      padding-bottom: 140px; /* spazio per il footer */
       box-sizing: border-box;
     }
+
     img {
       max-width: 90%;
       height: auto;
@@ -25,7 +32,7 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    /* footer fisso in basso, centrato */
+    /* footer in basso */
     .footer {
       position: fixed;
       left: 50%;
@@ -33,28 +40,33 @@
       transform: translateX(-50%);
       background: white;
       padding: 8px 10px;
-      border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    #qrcode { width: 80px; height: 80px; }
+
+    #qrcode {
+      width: 80px; 
+      height: 80px; 
+      /* niente border-radius qui */
+    }
+
     .caption {
       margin-top: 6px;
       font-size: 12px;
-      color: #1a73e8; /* blu per risaltare */
+      color: #1a73e8; /* blu */
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Lascia qui il tuo tag immagine così com'è -->
+    <!-- Immagine principale -->
     <img src="immagine.jpg" alt="Immagine caricata da GitHub Pages">
   </div>
 
   <div class="footer" aria-label="QR code link">
-    <div id="qrcode" role="img" aria-label="QR code per aprire Gratis Coffee Break"></div>
+    <div id="qrcode"></div>
     <div class="caption">Scansiona qui</div>
   </div>
 
@@ -63,32 +75,15 @@
       var qDiv = document.getElementById('qrcode');
       var url = 'https://alessiovolpini98-create.github.io/GratisCoffeBreak/';
 
-      // Proviamo a generare con la libreria QRCode
-      try {
-        if (typeof QRCode !== 'undefined') {
-          // pulisce eventuale contenuto precedente
-          qDiv.innerHTML = '';
-          new QRCode(qDiv, {
-            text: url,
-            width: 80,
-            height: 80,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.H
-          });
-        } else {
-          throw new Error('QRCode non definito');
-        }
-      } catch (err) {
-        // fallback: usare l'API Google Charts come <img>
-        console.warn('QRCode lib non disponibile — uso fallback immagine:', err);
-        var img = document.createElement('img');
-        img.src = 'https://chart.googleapis.com/chart?chs=80x80&cht=qr&chl=' + encodeURIComponent(url) + '&chld=L|1';
-        img.alt = 'QR code';
-        img.style.width = '80px';
-        img.style.height = '80px';
-        qDiv.appendChild(img);
-      }
+      qDiv.innerHTML = ''; // pulisce
+      new QRCode(qDiv, {
+        text: url,
+        width: 80,
+        height: 80,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
     });
   </script>
 </body>
