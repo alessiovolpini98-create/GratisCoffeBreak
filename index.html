@@ -1,60 +1,95 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Mostra Immagine + QR Code</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-        }
-        img {
-            max-width: 90%;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-        }
-        #qrcode {
-            margin: 10px;
-            padding: 5px;
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        .footer {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .footer p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            color: #333;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>Mostra Immagine + QR Code</title>
+
+  <!-- CDN affidabile per qrcodejs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    html, body { height: 100%; margin: 0; font-family: Arial, sans-serif; background:#f4f4f4; }
+    /* contenitore centrale per mantenere l'immagine centrata */
+    .container {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 140px; /* spazio per il footer fisso */
+      box-sizing: border-box;
+    }
+    img {
+      max-width: 90%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* footer fisso in basso, centrato */
+    .footer {
+      position: fixed;
+      left: 50%;
+      bottom: 12px;
+      transform: translateX(-50%);
+      background: white;
+      padding: 8px 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #qrcode { width: 80px; height: 80px; }
+    .caption {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #1a73e8; /* blu per risaltare */
+    }
+  </style>
 </head>
 <body>
-    <!-- Immagine centrale -->
+  <div class="container">
+    <!-- Lascia qui il tuo tag immagine così com'è -->
     <img src="immagine.jpg" alt="Immagine caricata da GitHub Pages">
+  </div>
 
-    <!-- QR code in basso -->
-    <div class="footer">
-        <div id="qrcode"></div>
-        <p>Scansiona qui</p>
-    </div>
+  <div class="footer" aria-label="QR code link">
+    <div id="qrcode" role="img" aria-label="QR code per aprire Gratis Coffee Break"></div>
+    <div class="caption">Scansiona qui</div>
+  </div>
 
-    <script>
-        new QRCode(document.getElementById("qrcode"), {
-            text: "https://alessiovolpini98-create.github.io/GratisCoffeBreak/",
-            width: 100,
-            height: 100
-        });
-    </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var qDiv = document.getElementById('qrcode');
+      var url = 'https://alessiovolpini98-create.github.io/GratisCoffeBreak/';
+
+      // Proviamo a generare con la libreria QRCode
+      try {
+        if (typeof QRCode !== 'undefined') {
+          // pulisce eventuale contenuto precedente
+          qDiv.innerHTML = '';
+          new QRCode(qDiv, {
+            text: url,
+            width: 80,
+            height: 80,
+            colorDark: '#000000',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        } else {
+          throw new Error('QRCode non definito');
+        }
+      } catch (err) {
+        // fallback: usare l'API Google Charts come <img>
+        console.warn('QRCode lib non disponibile — uso fallback immagine:', err);
+        var img = document.createElement('img');
+        img.src = 'https://chart.googleapis.com/chart?chs=80x80&cht=qr&chl=' + encodeURIComponent(url) + '&chld=L|1';
+        img.alt = 'QR code';
+        img.style.width = '80px';
+        img.style.height = '80px';
+        qDiv.appendChild(img);
+      }
+    });
+  </script>
 </body>
 </html>
